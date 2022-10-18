@@ -10,6 +10,10 @@ public class Brick extends Entity {
     public Brick(int x, int y, Image image) {
         super(x, y, image);
         this.timeRemove = 48;
+        this.setFixTop(0);
+        this.setFixBottom(-2);
+        this.setFixLeft(2);
+        this.setFixRight(-4);
     }
 
     void removeAnimation() {

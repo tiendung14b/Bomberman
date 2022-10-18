@@ -15,6 +15,11 @@ public abstract class Entity {
     //Tọa độ Y tính từ góc trái trên trong Canvas
     protected int y;
 
+    private int fixLeft = 0;
+    private int fixRight = 0;
+    private int fixTop = 0;
+    private int fixBottom = 0;
+
     protected Image img;
     protected boolean breakable;
     protected boolean isBreak;
@@ -43,6 +48,38 @@ public abstract class Entity {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public int getFixLeft() {
+        return fixLeft;
+    }
+
+    public void setFixLeft(int fixLeft) {
+        this.fixLeft = fixLeft;
+    }
+
+    public int getFixRight() {
+        return fixRight;
+    }
+
+    public void setFixRight(int fixRight) {
+        this.fixRight = fixRight;
+    }
+
+    public int getFixTop() {
+        return fixTop;
+    }
+
+    public void setFixTop(int fixTop) {
+        this.fixTop = fixTop;
+    }
+
+    public int getFixBottom() {
+        return fixBottom;
+    }
+
+    public void setFixBottom(int fixBottom) {
+        this.fixBottom = fixBottom;
     }
 
     public Image getImg() {

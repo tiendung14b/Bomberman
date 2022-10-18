@@ -10,6 +10,10 @@ public class Bomb extends Entity {
     public Bomb(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
         this.time = 128;
+        this.setFixTop(0);
+        this.setFixBottom(-2);
+        this.setFixLeft(2);
+        this.setFixRight(-4);
     }
 
     public int getAnimation() {

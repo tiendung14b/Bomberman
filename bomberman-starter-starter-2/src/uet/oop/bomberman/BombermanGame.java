@@ -13,7 +13,7 @@ import uet.oop.bomberman.graphics.Map;
 import uet.oop.bomberman.graphics.Sprite;
 import java.awt.*;
 
-import static uet.oop.bomberman.graphics.Map.player;
+import uet.oop.bomberman.graphics.Map.*;
 
 public class BombermanGame extends Application {
     
@@ -56,11 +56,11 @@ public class BombermanGame extends Application {
             }
         };
         timer.start();
-//        sound = new Sound("D:/Workspace/Project/OP_Bomberman/bomberman-starter-starter-2/res/sound/stage_theme.wav");
+//        sound = new Sound("bomberman-starter-starter-2/res/sound/stage_theme.wav");
 //        sound.play();
 //        sound.loop();
         map = new Map("D:/Workspace/Project/OP_Bomberman/bomberman-starter-starter-2/res/levels/Level1.txt");
-        player = new Player(1, 1, Sprite.player_down.getFxImage());
+        map.setPlayer(new Player(1, 1, Sprite.player_down.getFxImage()));
     }
 
     public void renderEndGame() {

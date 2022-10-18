@@ -1,11 +1,13 @@
 package uet.oop.bomberman.entities.dynamic_entities;
 
 import javafx.scene.image.Image;
+import uet.oop.bomberman.Sound;
 import uet.oop.bomberman.entities.Entity;
 
 import static uet.oop.bomberman.BombermanGame.*;
 
 import uet.oop.bomberman.entities.static_entity.*;
+import uet.oop.bomberman.entities.static_entity.Item.Item;
 import uet.oop.bomberman.graphics.Map;
 import uet.oop.bomberman.graphics.Map.*;
 import uet.oop.bomberman.graphics.Sprite;
@@ -13,13 +15,6 @@ import uet.oop.bomberman.graphics.Sprite;
 import java.util.List;
 
 public class Creature extends Entity {
-    //------------------------------
-    // fix lại tọa độ cho các cạnh của object, để xử lý va chạm tốt hơn
-    //--------------------------------
-    private int fixLeft = 0;
-    private int fixRight = 0;
-    private int fixTop = 0;
-    private int fixBottom = 0;
     //------------------------------
     // thuộc tính của creature
     //-------------------------------
@@ -29,43 +24,14 @@ public class Creature extends Entity {
     protected String direction; // hướng đi của object
     protected int speed;
     protected int timeToRefreshFrame = 0; // thời gian để làm mới animation
-    protected int timeDeath = 48;
+    protected int timeDeath = 128;
     protected int animationDeath = 0;
+    //------------------------------
+    // method
+    //-------------------------------
 
     public Creature(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
-    }
-
-    public int getFixLeft() {
-        return fixLeft;
-    }
-
-    public void setFixLeft(int fixLeft) {
-        this.fixLeft = fixLeft;
-    }
-
-    public int getFixRight() {
-        return fixRight;
-    }
-
-    public void setFixRight(int fixRight) {
-        this.fixRight = fixRight;
-    }
-
-    public int getFixTop() {
-        return fixTop;
-    }
-
-    public void setFixTop(int fixTop) {
-        this.fixTop = fixTop;
-    }
-
-    public int getFixBottom() {
-        return fixBottom;
-    }
-
-    public void setFixBottom(int fixBottom) {
-        this.fixBottom = fixBottom;
     }
 
     public boolean isAlive() {
@@ -122,19 +88,28 @@ public class Creature extends Entity {
 
     // time delay for animation
     public void setTimeToRefreshFrame(int timeToRefreshFrame) {
-        if (timeToRefreshFrame >= 16) {
+        if (timeToRefreshFrame >= 32) {
             this.timeToRefreshFrame = 0;
         } else {
             this.timeToRefreshFrame = timeToRefreshFrame;
         }
     }
 
-    // xử lý hành động, kèm theo kiểm tra va chạm
+    //------------------------------
+    // di chuyen + render
+    //-------------------------------
     public void handleAction() {
         if(!this.isMove()) { return; }
 
         if(this.getTimeToRefreshFrame() == 0) {
             this.setIdAnimation(this.getIdAnimation() % 4 + 1);
+            if(this instanceof Player) {
+                if(this.getIdAnimation() == 1) {
+                    new Sound("bomberman-starter-starter-2/res/sound/walk_1.wav").play();
+                } else if (this.getIdAnimation() == 3) {
+                    new Sound("bomberman-starter-starter-2/res/sound/walk_2.wav").play();
+                }
+            }
         }
 
         int _x = 0, _y = 0;
@@ -297,18 +272,24 @@ public class Creature extends Entity {
         }
     }
 
-    // check collision algorithm for some object like player, enemy, or static object like flame
+    //------------------------------
+    // xu ly va cham
+    //-------------------------------
     public boolean checkCollision(Entity entity) {
         // the coordinates of the corners - sides of the object
-        int left_a = this.x + this.fixLeft;
-        int right_a = this.x + 32 + this.fixRight;
-        int top_a = this.y + this.fixTop;
-        int bottom_a = this.y + 32 + this.fixBottom;
+        int left_a = this.x + this.getFixLeft();
+        int right_a = this.x + 32 + this.getFixRight();
+        int top_a = this.y + this.getFixTop();
+        int bottom_a = this.y + 32 + this.getFixBottom();
         // the coordinates of the corners - sides of the entity
-        int left_b = entity.getX() + 2;
-        int right_b = entity.getX() + 28;
-        int top_b = entity.getY();
-        int bottom_b = entity.getY() + 30;
+        int left_b = entity.getX() + entity.getFixLeft();
+//        int left_b = entity.getX() + 2;
+        int right_b = entity.getX() + 32 + entity.getFixRight();
+//        int right_b = entity.getX() + 28;
+        int top_b = entity.getY() + entity.getFixTop();
+//        int top_b = entity.getY();
+        int bottom_b = entity.getY() + 32 + entity.getFixBottom();
+//        int bottom_b = entity.getY() + 30;
 
         if (left_a > left_b && left_a < right_b) {
             if (top_a > top_b && top_a < bottom_b) {
@@ -361,7 +342,6 @@ public class Creature extends Entity {
         return top_a == top_b && right_a == right_b && bottom_a == bottom_b;
     }
 
-    // handle collision
     public void handleCollision(int _x, int _y) {
         boolean is_col = false;
         // kiểm tra xem có va chạm với flame không
@@ -392,6 +372,18 @@ public class Creature extends Entity {
                 break;
             }
         }
+        // kiểm tra xem người chơi có ăn item không
+        if(this instanceof Player) {
+            for(Item item : map.getSubLayout()) {
+                if(this.checkCollision(item)) {
+                    new Sound("bomberman-starter-starter-2/res/sound/power_up.wav").play();
+                    item.toPlayer();
+                    item.setBreak(true);
+                    break;
+                }
+            }
+        }
+        // xu ly va cham
         if (is_col) {
             if(this instanceof Balloon) {
                 ((Balloon) this).setTimeToChangeDir(0);
@@ -403,10 +395,6 @@ public class Creature extends Entity {
 
     @Override
     public void update() {
-        if(!this.isAlive()) {
-            this.renderDeathAnimation();
-        } else {
-            handleAction();
-        }
+
     }
 }

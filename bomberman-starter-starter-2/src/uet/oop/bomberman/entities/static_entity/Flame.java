@@ -6,21 +6,25 @@ import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class Flame extends Entity {
-    private static int power = 4;
+    private static int power = 1;
     private int timeImpact;
     private String type;
     private int animation;
     public Flame(int xUnit, int yUnit, Image img, String type) {
         super(xUnit, yUnit, img);
         this.type = type;
-        this.timeImpact = 36;
+        this.timeImpact = 24;
+        this.setFixTop(0);
+        this.setFixBottom(-2);
+        this.setFixLeft(2);
+        this.setFixRight(-4);
     }
 
     public static int getPower() {
         return power;
     }
 
-    public void setPower(int power) {
+    public static void setPower(int power) {
         Flame.power = power;
     }
 

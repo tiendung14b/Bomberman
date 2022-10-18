@@ -9,6 +9,7 @@ import static uet.oop.bomberman.graphics.Map.*;
 
 public class Player extends Creature{
     private boolean putBomb;
+    private int numberOfPlay;
     public Player(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
         this.setAlive(true);
@@ -56,6 +57,14 @@ public class Player extends Creature{
 
     public void setPutBomb(boolean putBomb) {
         this.putBomb = putBomb;
+    }
+
+    public int getNumberOfPlay() {
+        return numberOfPlay;
+    }
+
+    public void setNumberOfPlay(int numberOfPlay) {
+        this.numberOfPlay = numberOfPlay;
     }
 
     @Override

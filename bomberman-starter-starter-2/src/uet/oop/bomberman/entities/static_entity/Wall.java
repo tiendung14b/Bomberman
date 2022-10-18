@@ -7,6 +7,10 @@ public class Wall extends Entity {
 
     public Wall(int x, int y, Image img) {
         super(x, y, img);
+        this.setFixTop(0);
+        this.setFixBottom(-2);
+        this.setFixLeft(2);
+        this.setFixRight(-4);
     }
 
     @Override

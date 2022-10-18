@@ -7,10 +7,8 @@ import java.util.Random;
 
 public class Balloon extends Creature{
     private final int time = 128;
-    private final int timeRemove = 32;
     private int timeToChangeDir;
     private int animation;
-    private int removeAnimation;
     private int oldDir = -1;
     public Balloon(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
@@ -18,10 +16,10 @@ public class Balloon extends Creature{
         this.speed = 1;
         this.isMove = true;
         this.setAlive(true);
-        this.setFixLeft(4);
-        this.setFixRight(-4);
-        this.setFixTop(2);
-        this.setFixBottom(-4);
+//        this.setFixTop(0);
+//        this.setFixBottom(-2);
+//        this.setFixLeft(2);
+//        this.setFixRight(-4);
     }
 
     public int getTimeToChangeDir() {
@@ -67,11 +65,14 @@ public class Balloon extends Creature{
 
     @Override
     public void update() {
-        move();
         if(!this.isAlive()) {
+            this.renderDeathAnimation();
             this.timeDeath--;
         }
-        handleAction();
+        else {
+            move();
+            handleAction();
+        }
     }
 
     @Override
