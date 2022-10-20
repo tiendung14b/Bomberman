@@ -2,12 +2,13 @@ package uet.oop.bomberman.entities.static_entity.Item;
 
 import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.static_entity.Flame;
+import uet.oop.bomberman.entities.static_entity.Object.Flame;
 
 import static uet.oop.bomberman.BombermanGame.*;
-import static uet.oop.bomberman.entities.static_entity.Flame.*;
+
 public class Item extends Entity {
     private String type;
+
     public Item(int xUnit, int yUnit, Image img, String type) {
         super(xUnit, yUnit, img);
         this.setFixLeft(16);

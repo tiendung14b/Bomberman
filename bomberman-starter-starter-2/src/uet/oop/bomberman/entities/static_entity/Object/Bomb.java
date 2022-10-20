@@ -1,4 +1,4 @@
-package uet.oop.bomberman.entities.static_entity;
+package uet.oop.bomberman.entities.static_entity.Object;
 
 import javafx.scene.image.Image;
 import uet.oop.bomberman.entities.Entity;
@@ -7,6 +7,7 @@ import uet.oop.bomberman.graphics.Sprite;
 public class Bomb extends Entity {
     private int animation;
     private int time;
+    private boolean newBomb;
     public Bomb(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
         this.time = 128;
@@ -14,6 +15,7 @@ public class Bomb extends Entity {
         this.setFixBottom(-2);
         this.setFixLeft(2);
         this.setFixRight(-4);
+        newBomb = true;
     }
 
     public int getAnimation() {
@@ -30,6 +32,14 @@ public class Bomb extends Entity {
 
     public void setTime(int time) {
         this.time = time;
+    }
+
+    public boolean isNewBomb() {
+        return newBomb;
+    }
+
+    public void setNewBomb(boolean newBomb) {
+        this.newBomb = newBomb;
     }
 
     private Image getImage() {

@@ -6,13 +6,12 @@ import uet.oop.bomberman.entities.Entity;
 
 import static uet.oop.bomberman.BombermanGame.*;
 
-import uet.oop.bomberman.entities.static_entity.*;
+import uet.oop.bomberman.entities.dynamic_entities.enemy.Balloon;
 import uet.oop.bomberman.entities.static_entity.Item.Item;
-import uet.oop.bomberman.graphics.Map;
-import uet.oop.bomberman.graphics.Map.*;
+import uet.oop.bomberman.entities.static_entity.Object.Bomb;
+import uet.oop.bomberman.entities.static_entity.Object.Flame;
+import uet.oop.bomberman.entities.static_entity.Object.Grass;
 import uet.oop.bomberman.graphics.Sprite;
-
-import java.util.List;
 
 public class Creature extends Entity {
     //------------------------------
@@ -96,18 +95,24 @@ public class Creature extends Entity {
     }
 
     //------------------------------
-    // di chuyen + render
+    // di chuyen + render di chuyen
     //-------------------------------
     public void handleAction() {
-        if(!this.isMove()) { return; }
+        if (!this.isMove()) {
+            return;
+        }
 
-        if(this.getTimeToRefreshFrame() == 0) {
+        if (this.getTimeToRefreshFrame() == 0) {
             this.setIdAnimation(this.getIdAnimation() % 4 + 1);
-            if(this instanceof Player) {
-                if(this.getIdAnimation() == 1) {
-                    new Sound("bomberman-starter-starter-2/res/sound/walk_1.wav").play();
-                } else if (this.getIdAnimation() == 3) {
-                    new Sound("bomberman-starter-starter-2/res/sound/walk_2.wav").play();
+            if (this instanceof Player) {
+                if (this.getIdAnimation() == 1 || this.getIdAnimation() == 3) {
+                    if (soundOn) {
+                        new Sound("bomberman-starter-starter-2/res/sound/walk_1.wav").play();
+                    }
+                } else if (this.getIdAnimation() == 2 || this.getIdAnimation() == 4) {
+                    if (soundOn) {
+                        new Sound("bomberman-starter-starter-2/res/sound/walk_2.wav").play();
+                    }
                 }
             }
         }
@@ -116,7 +121,7 @@ public class Creature extends Entity {
         switch (this.getDirection()) {
             case "up":
                 upStep();
-                _y =  -1 * this.getSpeed();
+                _y = -1 * this.getSpeed();
                 break;
             case "down":
                 downStep();
@@ -138,8 +143,8 @@ public class Creature extends Entity {
     }
 
     public void upStep() {
-        Image idle,action1, action2;
-        if(this instanceof Player) {
+        Image idle, action1, action2;
+        if (this instanceof Player) {
             idle = Sprite.player_up.getFxImage();
             action1 = Sprite.player_up_1.getFxImage();
             action2 = Sprite.player_up_2.getFxImage();
@@ -163,8 +168,8 @@ public class Creature extends Entity {
     }
 
     public void leftStep() {
-        Image idle,action1, action2;
-        if(this instanceof Player) {
+        Image idle, action1, action2;
+        if (this instanceof Player) {
             idle = Sprite.player_left.getFxImage();
             action1 = Sprite.player_left_1.getFxImage();
             action2 = Sprite.player_left_2.getFxImage();
@@ -188,8 +193,8 @@ public class Creature extends Entity {
     }
 
     public void rightStep() {
-        Image idle,action1, action2;
-        if(this instanceof Player) {
+        Image idle, action1, action2;
+        if (this instanceof Player) {
             idle = Sprite.player_right.getFxImage();
             action1 = Sprite.player_right_1.getFxImage();
             action2 = Sprite.player_right_2.getFxImage();
@@ -213,8 +218,8 @@ public class Creature extends Entity {
     }
 
     public void downStep() {
-        Image idle,action1, action2;
-        if(this instanceof Player) {
+        Image idle, action1, action2;
+        if (this instanceof Player) {
             idle = Sprite.player_down.getFxImage();
             action1 = Sprite.player_down_1.getFxImage();
             action2 = Sprite.player_down_2.getFxImage();
@@ -239,17 +244,17 @@ public class Creature extends Entity {
 
     public void renderDeathAnimation() {
         this.setTimeToRefreshFrame(this.getTimeToRefreshFrame() + 2);
-        if(timeToRefreshFrame == 0) {
+        if (timeToRefreshFrame == 0) {
             this.animationDeath++;
         }
-        Image action1,action2, action3, action4;
-        if(this instanceof Player) {
+        Image action1, action2, action3, action4;
+        if (this instanceof Player) {
             action1 = Sprite.player_dead1.getFxImage();
             action2 = Sprite.player_dead2.getFxImage();
             action3 = Sprite.player_dead3.getFxImage();
             action4 = Sprite.player_dead3.getFxImage();
-        } else if (this instanceof Balloon){
-            action1 =  Sprite.balloom_dead.getFxImage();
+        } else if (this instanceof Balloon) {
+            action1 = Sprite.balloom_dead.getFxImage();
             action2 = Sprite.mob_dead1.getFxImage();
             action3 = Sprite.mob_dead2.getFxImage();
             action4 = Sprite.mob_dead3.getFxImage();
@@ -276,91 +281,81 @@ public class Creature extends Entity {
     // xu ly va cham
     //-------------------------------
     public boolean checkCollision(Entity entity) {
-        // the coordinates of the corners - sides of the object
-        int left_a = this.x + this.getFixLeft();
-        int right_a = this.x + 32 + this.getFixRight();
-        int top_a = this.y + this.getFixTop();
-        int bottom_a = this.y + 32 + this.getFixBottom();
-        // the coordinates of the corners - sides of the entity
-        int left_b = entity.getX() + entity.getFixLeft();
-//        int left_b = entity.getX() + 2;
-        int right_b = entity.getX() + 32 + entity.getFixRight();
-//        int right_b = entity.getX() + 28;
-        int top_b = entity.getY() + entity.getFixTop();
-//        int top_b = entity.getY();
-        int bottom_b = entity.getY() + 32 + entity.getFixBottom();
-//        int bottom_b = entity.getY() + 30;
+        int left_this = this.x + this.getFixLeft();
+        int right_this = this.x + 32 + this.getFixRight();
+        int top_this = this.y + this.getFixTop();
+        int bottom_this = this.y + 32 + this.getFixBottom();
+        //--------------------------------------------------------------
+        int left_entity = entity.getX() + entity.getFixLeft();
+        int right_entity = entity.getX() + 32 + entity.getFixRight();
+        int top_entity = entity.getY() + entity.getFixTop();
+        int bottom_entity = entity.getY() + 32 + entity.getFixBottom();
 
-        if (left_a > left_b && left_a < right_b) {
-            if (top_a > top_b && top_a < bottom_b) {
+        // check trai tren
+        if (left_this > left_entity && left_this < right_entity) {
+            if (top_this > top_entity && top_this < bottom_entity) {
+                return true;
+            } else if (bottom_this > top_entity && bottom_this < bottom_entity) {
                 return true;
             }
         }
 
-        if (left_a > left_b && left_a < right_b) {
-            if (bottom_a > top_b && bottom_a < bottom_b) {
+        // check phai tren
+        if (right_this > left_entity && right_this < right_entity) {
+            if (top_this > top_entity && top_this < bottom_entity) {
+                return true;
+            } else if (bottom_this > top_entity && bottom_this < bottom_entity) {
                 return true;
             }
         }
 
-        if (right_a > left_b && right_a < right_b) {
-            if (top_a > top_b && top_a < bottom_b) {
+        // check trai tren
+        if (left_entity > left_this && left_entity < right_this) {
+            if (top_entity > top_this && top_entity < bottom_this) {
+                return true;
+            } else if (bottom_entity > top_this && bottom_entity < bottom_this) {
                 return true;
             }
         }
 
-        if (right_a > left_b && right_a < right_b) {
-            if (bottom_a > top_b && bottom_a < bottom_b) {
+        // check trai duoi
+        if (right_entity > left_this && right_entity < right_this) {
+            if (top_entity > top_this && top_entity < bottom_this) {
+                return true;
+            } else if (bottom_entity > top_this && bottom_entity < bottom_this) {
                 return true;
             }
         }
 
-        if (left_b > left_a && left_b < right_a) {
-            if (top_b > top_a && top_b < bottom_a) {
-                return true;
-            }
-        }
-
-        if (left_b > left_a && left_b < right_a) {
-            if (bottom_b > top_a && bottom_b < bottom_a) {
-                return true;
-            }
-        }
-
-        if (right_b > left_a && right_b < right_a) {
-            if (top_b > top_a && top_b < bottom_a) {
-                return true;
-            }
-        }
-
-        if (right_b > left_a && right_b < right_a) {
-            if (bottom_b > top_a && bottom_b < bottom_a) {
-                return true;
-            }
-        }
-
-        return top_a == top_b && right_a == right_b && bottom_a == bottom_b;
+        return top_this == top_entity && right_this == right_entity && bottom_this == bottom_entity;
     }
 
     public void handleCollision(int _x, int _y) {
         boolean is_col = false;
         // kiểm tra xem có va chạm với flame không
         for (Flame flame : map.getFlames()) {
-            if(this.checkCollision(flame)) {
+            if (this.checkCollision(flame)) {
                 this.setAlive(false);
             }
         }
         // kiểm tra xem người có va chạm với quái không
         if (this instanceof Player) {
-           for(Creature creature : map.getEnemy()) {
-               if(this.checkCollision(creature)) {
-                   this.setAlive(false);
-               }
-           }
+            for (Creature creature : map.getEnemy()) {
+                if (this.checkCollision(creature) && creature.isAlive()) {
+                    this.setAlive(false);
+                }
+            }
         }
         // kiểm tra xem có va chạm với bomb không
         for (Bomb bomb : map.getBombs()) {
-            if(this.checkCollision(bomb) && !(this instanceof Player)) {
+            if (this instanceof Player && !this.checkCollision(bomb)) {
+                bomb.setNewBomb(false);
+            }
+            if (this.checkCollision(bomb) && (this instanceof Player && !bomb.isNewBomb())) {
+                is_col = true;
+                break;
+            }
+            if (this.checkCollision(bomb) && (!(this instanceof Player))) {
                 is_col = true;
                 break;
             }
@@ -373,9 +368,9 @@ public class Creature extends Entity {
             }
         }
         // kiểm tra xem người chơi có ăn item không
-        if(this instanceof Player) {
-            for(Item item : map.getSubLayout()) {
-                if(this.checkCollision(item)) {
+        if (this instanceof Player) {
+            for (Item item : map.getSubLayout()) {
+                if (this.checkCollision(item)) {
                     new Sound("bomberman-starter-starter-2/res/sound/power_up.wav").play();
                     item.toPlayer();
                     item.setBreak(true);
@@ -385,7 +380,7 @@ public class Creature extends Entity {
         }
         // xu ly va cham
         if (is_col) {
-            if(this instanceof Balloon) {
+            if (this instanceof Balloon) {
                 ((Balloon) this).setTimeToChangeDir(0);
             }
             this.setX(this.getX() - _x);

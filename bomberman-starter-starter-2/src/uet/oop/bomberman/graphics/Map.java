@@ -1,13 +1,15 @@
 package uet.oop.bomberman.graphics;
 
+import javafx.scene.image.Image;
 import uet.oop.bomberman.Sound;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.dynamic_entities.Balloon;
+import uet.oop.bomberman.entities.dynamic_entities.enemy.Balloon;
 import uet.oop.bomberman.entities.dynamic_entities.Creature;
 import uet.oop.bomberman.entities.dynamic_entities.Player;
-import uet.oop.bomberman.entities.static_entity.*;
 import uet.oop.bomberman.entities.static_entity.Item.Item;
+import uet.oop.bomberman.entities.static_entity.Object.*;
 
+import static uet.oop.bomberman.Menu.*;
 import static uet.oop.bomberman.BombermanGame.*;
 
 import java.io.File;
@@ -18,23 +20,25 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Map {
-    public static final String pathLevel1 = "res/levels/Level1.txt";
+    public String level;
     private int levelMap;
     private int heightMap;
     private int widthMap;
+    private static final int maxTime = 120;
+    private int time = maxTime;
     private boolean isFinal = false;
 
     private List<Entity> layout1 = new ArrayList<>(); // chứa những object mà người chơi va chạm vào sẽ không di chuyển được
     private List<Entity> layout2 = new ArrayList<>(); // chứa những object mà người chơi có thể đi qua, những object này được render dưới lớp layout1
     private List<Item> subLayout = new ArrayList<>(); // layout này để chứ item
     private List<Bomb> bombs = new ArrayList<>(); // chứa object bomb trên bản đồ, bomb sẽ tự hủy nếu hết thời gian tồn tại
-    private int maxBomb; // max bomb mà người chơi có thể đặt vào bản đồ, tăng khi người chơi ăn item, khởi tạo gốc trong constructor
+    private static int maxBomb; // max bomb mà người chơi có thể đặt vào bản đồ, tăng khi người chơi ăn item, khởi tạo gốc trong constructor
     private List<Flame> flames = new ArrayList<>(); // chứa object là lửa sau khi bom nổ, flame sẽ tồn tại một khoảng thời gian là timeImpact, flame sẽ bị chặn mất khi gặp tường
-    private List<Balloon> enemy = new ArrayList<>(); // chứa object là quái vật trong game
+    private List<Creature> enemy = new ArrayList<>(); // chứa object là quái vật trong game
     public Player player; // đối tượng người chơi
 
     // constructor tạo map, load ảnh từ file text
-    public Map(String levelPath) {
+    public Map(String levelPath, String level) {
         final File file = new File(levelPath);
         try (FileReader fileReader = new FileReader(file)) {
             Scanner scanner = new Scanner(fileReader);
@@ -45,12 +49,12 @@ public class Map {
             for (int i = 0; i < heightMap; i++) {
                 String line = scanner.nextLine();
                 for (int j = 0; j < widthMap; j++) {
-                    if(line.charAt(j) == '#') {
+                    if (line.charAt(j) == '#') {
                         layout1.add(new Wall(j, i, Sprite.wall.getFxImage()));
                     } else if (line.charAt(j) == '*') {
                         layout1.add(new Brick(j, i, Sprite.brick.getFxImage()));
                         layout2.add(new Grass(j, i, Sprite.grass.getFxImage()));
-                    } else if (line.charAt(j) == '1'){
+                    } else if (line.charAt(j) == '1') {
                         enemy.add(new Balloon(j, i, Sprite.balloom_left1.getFxImage()));
                         layout2.add(new Grass(j, i, Sprite.grass.getFxImage()));
                     } else if (line.charAt(j) == '2') {
@@ -65,12 +69,33 @@ public class Map {
             System.out.println("Loi doc file roi agggghghhhhhh");
             ioException.printStackTrace();
         }
-        this.maxBomb = 2;
-        subLayout.add(new Item(7, 1, Sprite.powerup_bombs.getFxImage(),"powerUpBomb"));
+        this.maxBomb = 1;
+        this.level = level;
+        subLayout.add(new Item(7, 1, Sprite.powerup_bombs.getFxImage(), "powerUpBomb"));
         subLayout.add(new Item(10, 9, Sprite.powerup_flames.getFxImage(), "powerUpFlame"));
         subLayout.add(new Item(6, 9, Sprite.powerup_detonator.getFxImage(), "detonator"));
         subLayout.add(new Item(12, 3, Sprite.powerup_speed.getFxImage(), "speed"));
-        subLayout.add(new Item(16,11, Sprite.portal.getFxImage(), "portal"));
+        subLayout.add(new Item(16, 11, Sprite.portal.getFxImage(), "portal"));
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
+    public static int getMaxTime() {
+        return maxTime;
     }
 
     public int getLevelMap() {
@@ -102,7 +127,7 @@ public class Map {
     }
 
     public void setMaxBomb(int maxBomb) {
-        this.maxBomb = maxBomb;
+        Map.maxBomb = maxBomb;
     }
 
     public Player getPlayer() {
@@ -114,39 +139,36 @@ public class Map {
     }
 
     public void addBomb(Bomb bomb) {
-        for(Creature creature : enemy) {
-            if(creature.checkCollision(bomb) && bomb.getTime() == 128) {
+        for (Creature creature : enemy) {
+            if (creature.checkCollision(bomb) && bomb.getTime() == 128) {
                 return;
             }
         }
-        if(this.bombs.size() < maxBomb) {
+        if (this.bombs.size() < maxBomb) {
+            bomb.setNewBomb(true);
             new Sound("bomberman-starter-starter-2/res/sound/placed_bomb.wav").play();
             this.bombs.add(bomb);
         }
     }
 
-    // xử lý cho việc khi bom phát nổ
-    // chỉ xét quả bom đầu tiên do nó nổ đầu tiên
-    // khi nổ ra add flame xung quanh quả bom
-    // vệc check xem flame có chạm tường hay không cũng sẽ được xử lý trong hàm này
-    // tuy nhiên việc check nó có giết được quái hay không sẽ được xử lý tại phương thức
-    // check collision của object
     public void triggeredBomb() {
-        if(bombs.size() == 0) return;
-        if(bombs.get(0).getTime() != 0) return;
-        new Sound("bomberman-starter-starter-2/res/sound/bomb_explored.wav").play();
+        if (bombs.size() == 0) return;
+        if (bombs.get(0).getTime() != 0) return;
+        if(soundOn) {
+            new Sound("bomberman-starter-starter-2/res/sound/bomb_explored.wav").play();
+        }
         // if time of bomb equals 0
         Bomb bomb = bombs.get(0);
         // flame up
         for (int i = 1; i <= Flame.getPower(); i++) {
-            Entity entity = getLayout1At(bomb.getX(), bomb.getY() - i*32);
+            Entity entity = getLayout1At(bomb.getX(), bomb.getY() - i * 32);
             if (entity != null) {
-                if(entity.isBreakable()) {
+                if (entity.isBreakable()) {
                     entity.setBreak(true);
                 }
                 break;
             }
-            if(i == Flame.getPower()) {
+            if (i == Flame.getPower()) {
                 flames.add(new Flame(bomb.getX() / 32, bomb.getY() / 32 - i, null, "upLast"));
             } else {
                 flames.add(new Flame(bomb.getX() / 32, bomb.getY() / 32 - i, null, "up"));
@@ -154,14 +176,14 @@ public class Map {
         }
         // flame down
         for (int i = 1; i <= Flame.getPower(); i++) {
-            Entity entity = getLayout1At(bomb.getX(), bomb.getY() + i*32);
+            Entity entity = getLayout1At(bomb.getX(), bomb.getY() + i * 32);
             if (entity != null) {
-                if(entity.isBreakable()) {
+                if (entity.isBreakable()) {
                     entity.setBreak(true);
                 }
                 break;
             }
-            if(i == Flame.getPower()) {
+            if (i == Flame.getPower()) {
                 flames.add(new Flame(bomb.getX() / 32, bomb.getY() / 32 + i, null, "downLast"));
             } else {
                 flames.add(new Flame(bomb.getX() / 32, bomb.getY() / 32 + i, null, "down"));
@@ -171,12 +193,12 @@ public class Map {
         for (int i = 1; i <= Flame.getPower(); i++) {
             Entity entity = getLayout1At(bomb.getX() - i * 32, bomb.getY());
             if (entity != null) {
-                if(entity.isBreakable()) {
+                if (entity.isBreakable()) {
                     entity.setBreak(true);
                 }
                 break;
             }
-            if(i == Flame.getPower()) {
+            if (i == Flame.getPower()) {
                 flames.add(new Flame(bomb.getX() / 32 - i, bomb.getY() / 32, null, "leftLast"));
             } else {
                 flames.add(new Flame(bomb.getX() / 32 - i, bomb.getY() / 32, null, "left"));
@@ -186,12 +208,12 @@ public class Map {
         for (int i = 1; i <= Flame.getPower(); i++) {
             Entity entity = getLayout1At(bomb.getX() + i * 32, bomb.getY());
             if (entity != null) {
-                if(entity.isBreakable()) {
+                if (entity.isBreakable()) {
                     entity.setBreak(true);
                 }
                 break;
             }
-            if(i == Flame.getPower()) {
+            if (i == Flame.getPower()) {
                 flames.add(new Flame(bomb.getX() / 32 + i, bomb.getY() / 32, null, "rightLast"));
             } else {
                 flames.add(new Flame(bomb.getX() / 32 + i, bomb.getY() / 32, null, "right"));
@@ -277,11 +299,11 @@ public class Map {
         this.flames = flames;
     }
 
-    public List<Balloon> getEnemy() {
+    public List<Creature> getEnemy() {
         return enemy;
     }
 
-    public void setEnemy(List<Balloon> enemy) {
+    public void setEnemy(List<Creature> enemy) {
         this.enemy = enemy;
     }
 
@@ -300,9 +322,18 @@ public class Map {
         layout1.removeIf(value -> value.getTimeRemove() == 0);
         enemy.removeIf(value -> value.getTimeDeath() == 0);
         subLayout.removeIf(Entity::isBreak);
-        if(!isFinal && enemy.size() == 0) {
+        if(!player.isAlive()) {
+            gameButton.setImage(new Image("D:/Workspace/Project/OP_Bomberman/bomberman-starter-starter-2/res/Menu/start_button.png"));
+            viewImage.setImage(new Image("D:/Workspace/Project/OP_Bomberman/bomberman-starter-starter-2/res/Menu/bground.png"));
             isFinal = true;
+            isPause = true;
+            sound.stop();
+        }
+        if (!isFinal && enemy.size() == 0) {
+            isFinal = true;
+            isPause = true;
             new Sound("bomberman-starter-starter-2/res/sound/next_level.wav").play();
+            gameButton.setImage(new Image("D:/Workspace/Project/OP_Bomberman/bomberman-starter-starter-2/res/Menu/start_button.png"));
         }
     }
 

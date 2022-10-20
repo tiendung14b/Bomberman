@@ -1,11 +1,8 @@
 package uet.oop.bomberman.entities;
 
-import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import uet.oop.bomberman.entities.static_entity.Brick;
+import uet.oop.bomberman.entities.static_entity.Object.Brick;
 import uet.oop.bomberman.graphics.Sprite;
 
 public abstract class Entity {
@@ -24,12 +21,13 @@ public abstract class Entity {
     protected boolean breakable;
     protected boolean isBreak;
     protected int timeRemove = 1;
+
     //Khởi tạo đối tượng, chuyển từ tọa độ đơn vị sang tọa độ trong canvas
-    public Entity( int xUnit, int yUnit, Image img) {
+    public Entity(int xUnit, int yUnit, Image img) {
         this.x = xUnit * Sprite.SCALED_SIZE;
         this.y = yUnit * Sprite.SCALED_SIZE;
         this.img = img;
-        if(this instanceof Brick) {
+        if (this instanceof Brick) {
             this.breakable = true;
         }
     }
@@ -117,5 +115,6 @@ public abstract class Entity {
     public void render(GraphicsContext gc) {
         gc.drawImage(img, x, y);
     }
+
     public abstract void update();
 }

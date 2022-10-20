@@ -1,15 +1,17 @@
-package uet.oop.bomberman.entities.dynamic_entities;
+package uet.oop.bomberman.entities.dynamic_entities.enemy;
 
 import javafx.scene.image.Image;
+import uet.oop.bomberman.entities.dynamic_entities.Creature;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.Random;
 
-public class Balloon extends Creature{
+public class Balloon extends Creature {
     private final int time = 128;
     private int timeToChangeDir;
     private int animation;
     private int oldDir = -1;
+
     public Balloon(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
         this.timeToChangeDir = time;
@@ -39,10 +41,10 @@ public class Balloon extends Creature{
     }
 
     public void move() {
-        if(!this.isAlive()) {
+        if (!this.isAlive()) {
             return;
         }
-        if(timeToChangeDir == 0) {
+        if (timeToChangeDir == 0) {
             animation = new Random().nextInt() % 4;
             timeToChangeDir = time;
         }
@@ -65,11 +67,10 @@ public class Balloon extends Creature{
 
     @Override
     public void update() {
-        if(!this.isAlive()) {
+        if (!this.isAlive()) {
             this.renderDeathAnimation();
             this.timeDeath--;
-        }
-        else {
+        } else {
             move();
             handleAction();
         }

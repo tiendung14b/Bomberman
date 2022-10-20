@@ -1,18 +1,17 @@
 package uet.oop.bomberman.entities.dynamic_entities;
 
 import javafx.scene.image.Image;
-import uet.oop.bomberman.entities.static_entity.Bomb;
+import uet.oop.bomberman.entities.static_entity.Object.Bomb;
 import uet.oop.bomberman.graphics.Sprite;
 
 import static uet.oop.bomberman.BombermanGame.*;
-import static uet.oop.bomberman.graphics.Map.*;
 
-public class Player extends Creature{
+public class Player extends Creature {
     private boolean putBomb;
     private int numberOfPlay;
+
     public Player(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
-        this.setAlive(true);
         this.speed = 2;
         this.setFixRight(-10);
         this.setFixBottom(-4);
@@ -66,6 +65,11 @@ public class Player extends Creature{
     public void setNumberOfPlay(int numberOfPlay) {
         this.numberOfPlay = numberOfPlay;
     }
+
+//    @Override
+//    public void render(GraphicsContext gc) {
+//        gc.drawImage(this.getImg(), screenX, screenY);
+//    }
 
     @Override
     public void update() {

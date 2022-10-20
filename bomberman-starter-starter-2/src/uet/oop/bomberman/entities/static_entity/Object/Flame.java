@@ -1,4 +1,4 @@
-package uet.oop.bomberman.entities.static_entity;
+package uet.oop.bomberman.entities.static_entity.Object;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
