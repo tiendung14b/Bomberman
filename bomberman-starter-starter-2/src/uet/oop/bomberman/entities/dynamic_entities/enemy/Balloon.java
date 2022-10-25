@@ -18,10 +18,6 @@ public class Balloon extends Creature {
         this.speed = 1;
         this.isMove = true;
         this.setAlive(true);
-//        this.setFixTop(0);
-//        this.setFixBottom(-2);
-//        this.setFixLeft(2);
-//        this.setFixRight(-4);
     }
 
     public int getTimeToChangeDir() {

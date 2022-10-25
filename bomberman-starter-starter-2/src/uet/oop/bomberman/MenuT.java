@@ -12,7 +12,7 @@ import uet.oop.bomberman.level.Level1;
 
 import static uet.oop.bomberman.BombermanGame.*;
 
-public class Menu {
+public class MenuT {
     static Map map;
     public static ImageView gameButton;
     private static ImageView soundButton;
@@ -21,7 +21,7 @@ public class Menu {
     public static final Image resume_button = new Image("D:/Workspace/Project/OP_Bomberman/bomberman-starter-starter-2/res/Menu/resumeButton.png");
     public static Text level, bomb, maxBomb, timeRemain;
 
-    public Menu() {
+    public MenuT() {
     }
 
     public void renderStage(String level) {
@@ -84,18 +84,21 @@ public class Menu {
     }
 
     public static void updateMenu(Map map) {
-        Menu.map = map;
+        if(map == null) {
+            return;
+        }
+        MenuT.map = map;
         long time = System.currentTimeMillis();
 
         if (time - lastTime > 1000) {
             lastTime = time;
-            Menu.map.setTime(Menu.map.getTime() - 1);
+            MenuT.map.setTime(MenuT.map.getTime() - 1);
         }
 
-        level.setText(Menu.map.getLevel());
+        level.setText(MenuT.map.getLevel());
         maxBomb.setText("Max bomb: " + map.getMaxBomb());
         bomb.setText("Bomb: " + (map.getMaxBomb() - map.getBombs().size()));
-        timeRemain.setText("Time: " + (Menu.map.getTime()));
+        timeRemain.setText("Time: " + (MenuT.map.getTime()));
 
         gameButton.setOnMouseClicked(mouseEvent -> {
             if (isPause) {

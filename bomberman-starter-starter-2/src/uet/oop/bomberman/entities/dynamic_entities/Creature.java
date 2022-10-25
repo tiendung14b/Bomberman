@@ -7,6 +7,7 @@ import uet.oop.bomberman.entities.Entity;
 import static uet.oop.bomberman.BombermanGame.*;
 
 import uet.oop.bomberman.entities.dynamic_entities.enemy.Balloon;
+import uet.oop.bomberman.entities.dynamic_entities.enemy.Oneal;
 import uet.oop.bomberman.entities.static_entity.Item.Item;
 import uet.oop.bomberman.entities.static_entity.Object.Bomb;
 import uet.oop.bomberman.entities.static_entity.Object.Flame;
@@ -136,6 +137,7 @@ public class Creature extends Entity {
                 _x = this.getSpeed();
                 break;
         }
+
         this.setTimeToRefreshFrame(this.timeToRefreshFrame + this.getSpeed());
         this.setX(this.getX() + _x);
         this.setY(this.getY() + _y);
@@ -148,10 +150,16 @@ public class Creature extends Entity {
             idle = Sprite.player_up.getFxImage();
             action1 = Sprite.player_up_1.getFxImage();
             action2 = Sprite.player_up_2.getFxImage();
-        } else {
+        } else if (this instanceof Balloon){
             idle = Sprite.balloom_left1.getFxImage();
             action1 = Sprite.balloom_left2.getFxImage();
             action2 = Sprite.balloom_left3.getFxImage();
+        } else if (this instanceof Oneal) {
+            idle = Sprite.oneal_left1.getFxImage();
+            action1 = Sprite.oneal_left2.getFxImage();
+            action2 = Sprite.oneal_left3.getFxImage();
+        } else {
+            return;
         }
         switch (this.getIdAnimation()) {
             case 1:
@@ -173,10 +181,16 @@ public class Creature extends Entity {
             idle = Sprite.player_left.getFxImage();
             action1 = Sprite.player_left_1.getFxImage();
             action2 = Sprite.player_left_2.getFxImage();
-        } else {
+        } else if (this instanceof Balloon) {
             idle = Sprite.balloom_left1.getFxImage();
             action1 = Sprite.balloom_left2.getFxImage();
             action2 = Sprite.balloom_left3.getFxImage();
+        } else if (this instanceof Oneal) {
+            idle = Sprite.oneal_left1.getFxImage();
+            action1 = Sprite.oneal_left2.getFxImage();
+            action2 = Sprite.oneal_left3.getFxImage();
+        } else {
+            return;
         }
         switch (this.getIdAnimation()) {
             case 1:
@@ -198,10 +212,16 @@ public class Creature extends Entity {
             idle = Sprite.player_right.getFxImage();
             action1 = Sprite.player_right_1.getFxImage();
             action2 = Sprite.player_right_2.getFxImage();
-        } else {
+        } else if (this instanceof Balloon) {
             idle = Sprite.balloom_right1.getFxImage();
             action1 = Sprite.balloom_right2.getFxImage();
             action2 = Sprite.balloom_right3.getFxImage();
+        } else if (this instanceof Oneal) {
+            idle = Sprite.oneal_right1.getFxImage();
+            action1 = Sprite.oneal_right2.getFxImage();
+            action2 = Sprite.oneal_right3.getFxImage();
+        } else {
+            return;
         }
         switch (this.getIdAnimation()) {
             case 1:
@@ -223,10 +243,16 @@ public class Creature extends Entity {
             idle = Sprite.player_down.getFxImage();
             action1 = Sprite.player_down_1.getFxImage();
             action2 = Sprite.player_down_2.getFxImage();
-        } else {
+        } else if (this instanceof Balloon) {
             idle = Sprite.balloom_right1.getFxImage();
             action1 = Sprite.balloom_right2.getFxImage();
             action2 = Sprite.balloom_right3.getFxImage();
+        } else if (this instanceof Oneal) {
+            idle = Sprite.oneal_right1.getFxImage();
+            action1 = Sprite.oneal_right2.getFxImage();
+            action2 = Sprite.oneal_right3.getFxImage();
+        } else {
+            return;
         }
         switch (this.getIdAnimation()) {
             case 1:
@@ -255,6 +281,11 @@ public class Creature extends Entity {
             action4 = Sprite.player_dead3.getFxImage();
         } else if (this instanceof Balloon) {
             action1 = Sprite.balloom_dead.getFxImage();
+            action2 = Sprite.mob_dead1.getFxImage();
+            action3 = Sprite.mob_dead2.getFxImage();
+            action4 = Sprite.mob_dead3.getFxImage();
+        } else if (this instanceof Oneal){
+            action1 = Sprite.oneal_dead.getFxImage();
             action2 = Sprite.mob_dead1.getFxImage();
             action3 = Sprite.mob_dead2.getFxImage();
             action4 = Sprite.mob_dead3.getFxImage();
@@ -346,6 +377,11 @@ public class Creature extends Entity {
                 }
             }
         }
+        if (!(this instanceof Player)) {
+            if(this.checkCollision(map.getPlayer())) {
+                map.getPlayer().setAlive(false);
+            }
+        }
         // kiểm tra xem có va chạm với bomb không
         for (Bomb bomb : map.getBombs()) {
             if (this instanceof Player && !this.checkCollision(bomb)) {
@@ -382,6 +418,8 @@ public class Creature extends Entity {
         if (is_col) {
             if (this instanceof Balloon) {
                 ((Balloon) this).setTimeToChangeDir(0);
+            } else if (this instanceof Oneal) {
+                ((Oneal) this).setTimeToChangeDir(0);
             }
             this.setX(this.getX() - _x);
             this.setY(this.getY() - _y);

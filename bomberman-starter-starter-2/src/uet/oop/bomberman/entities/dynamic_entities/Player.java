@@ -73,7 +73,13 @@ public class Player extends Creature {
 
     @Override
     public void update() {
-        this.handleInputAction();
-        this.handleAction();
+        if(this.isAlive()) {
+            this.handleInputAction();
+            this.handleAction();
+        }
+        if (!this.isAlive()) {
+            this.renderDeathAnimation();
+            this.timeDeath--;
+        }
     }
 }
