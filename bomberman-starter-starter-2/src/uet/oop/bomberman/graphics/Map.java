@@ -1,16 +1,13 @@
 package uet.oop.bomberman.graphics;
 
-import javafx.scene.image.Image;
 import uet.oop.bomberman.Sound;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.dynamic_entities.enemy.Balloon;
+import uet.oop.bomberman.entities.dynamic_entities.enemy.*;
 import uet.oop.bomberman.entities.dynamic_entities.Creature;
-import uet.oop.bomberman.entities.dynamic_entities.Player;
-import uet.oop.bomberman.entities.dynamic_entities.enemy.Oneal;
+import uet.oop.bomberman.entities.dynamic_entities.Bomber.Player;
 import uet.oop.bomberman.entities.static_entity.Item.Item;
 import uet.oop.bomberman.entities.static_entity.Object.*;
 
-import static uet.oop.bomberman.Menu.*;
 import static uet.oop.bomberman.BombermanGame.*;
 
 import java.io.File;
@@ -27,7 +24,6 @@ public class Map {
     private int widthMap;
     private static final int maxTime = 120;
     private int time = maxTime;
-    private boolean isFinal = false;
 
     private List<Entity> layout1 = new ArrayList<>(); // chứa những object mà người chơi va chạm vào sẽ không di chuyển được
     private List<Entity> layout2 = new ArrayList<>(); // chứa những object mà người chơi có thể đi qua, những object này được render dưới lớp layout1
@@ -62,6 +58,15 @@ public class Map {
                     } else if (line.charAt(j) == '2') {
                         enemy.add(new Oneal(j, i, Sprite.oneal_right1.getFxImage()));
                         layout2.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                    } else if (line.charAt(j) == '3') {
+                        enemy.add(new Kondoria(j, i, Sprite.kondoria_left1.getFxImage()));
+                        layout2.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                    } else if (line.charAt(j) == '4') {
+                        enemy.add(new Doll(j, i, Sprite.doll_left2.getFxImage()));
+                        layout2.add(new Grass(j, i, Sprite.grass.getFxImage()));
+                    } else if (line.charAt(j) == '0') {
+                        enemy.add(new Minvo(j, i, Sprite.minvo_left1.getFxImage()));
+                        layout2.add(new Grass(j, i, Sprite.grass.getFxImage()));
                     } else {
                         layout2.add(new Grass(j, i, Sprite.grass.getFxImage()));
                     }
@@ -73,11 +78,22 @@ public class Map {
         }
         maxBomb = 1;
         this.level = level;
-        subLayout.add(new Item(7, 1, Sprite.powerup_bombs.getFxImage(), "powerUpBomb"));
-        subLayout.add(new Item(10, 9, Sprite.powerup_flames.getFxImage(), "powerUpFlame"));
-        subLayout.add(new Item(6, 9, Sprite.powerup_detonator.getFxImage(), "detonator"));
-        subLayout.add(new Item(12, 3, Sprite.powerup_speed.getFxImage(), "speed"));
-        subLayout.add(new Item(16, 11, Sprite.portal.getFxImage(), "portal"));
+        switch (levelMap) {
+            case 1:
+                subLayout.add(new Item(7, 1, Sprite.powerup_bombs.getFxImage(), "powerUpBomb"));
+                subLayout.add(new Item(10, 9, Sprite.powerup_flames.getFxImage(), "powerUpFlame"));
+                subLayout.add(new Item(6, 9, Sprite.powerup_detonator.getFxImage(), "detonator"));
+                subLayout.add(new Item(12, 3, Sprite.powerup_speed.getFxImage(), "speed"));
+                subLayout.add(new Item(16, 11, Sprite.portal.getFxImage(), "portal"));
+            case 2:
+                //todo
+            case 3:
+                //todo
+            case 4:
+                //todo
+            case 5:
+                //todo
+            }
     }
 
     public int getTime() {
@@ -148,12 +164,12 @@ public class Map {
         for(Entity entity : layout1) {
             mapping[entity.getY() / 32][entity.getX() / 32] = true;
         }
-        for(Bomb bomb : bombs) {
-            mapping[bomb.getY() / 32][bomb.getX() / 32] = true;
-        }
-        for(Flame flame : flames) {
-            mapping[flame.getY() / 32][flame.getX() / 32] = true;
-        }
+//        for(Bomb bomb : bombs) {
+//            mapping[bomb.getY() / 32][bomb.getX() / 32] = true;
+//        }
+//        for(Flame flame : flames) {
+//            mapping[flame.getY() / 32][flame.getX() / 32] = true;
+//        }
     }
 
     public void addBomb(Bomb bomb) {
@@ -164,7 +180,7 @@ public class Map {
         }
         if (this.bombs.size() < maxBomb) {
             bomb.setNewBomb(true);
-            new Sound("bomberman-starter-starter-2/res/sound/placed_bomb.wav").play();
+            new Sound("D:/Workspace/Demo3/BomberMan-tiendung2003/bomberman-starter-starter-2/res/sound/placed_bomb.wav").play();
             this.bombs.add(bomb);
         }
     }
@@ -173,7 +189,7 @@ public class Map {
         if (bombs.size() == 0) return;
         if (bombs.get(0).getTime() != 0) return;
         if(soundOn) {
-            new Sound("bomberman-starter-starter-2/res/sound/bomb_explored.wav").play();
+            new Sound("D:/Workspace/Demo3/BomberMan-tiendung2003/bomberman-starter-starter-2/res/sound/bomb_explored.wav").play();
         }
         // if time of bomb equals 0
         Bomb bomb = bombs.get(0);
@@ -341,15 +357,10 @@ public class Map {
         enemy.removeIf(value -> value.getTimeDeath() == 0);
         subLayout.removeIf(Entity::isBreak);
         if(!player.isAlive()) {
-            gameButton.setImage(new Image("D:/Workspace/Project/OP_Bomberman/bomberman-starter-starter-2/res/Menu/start_button.png"));
-//            viewImage.setImage(new Image("D:/Workspace/Project/OP_Bomberman/bomberman-starter-starter-2/res/Menu/bground.png"));
             isFinal = true;
-            sound.stop();
         }
-        if (!isFinal && enemy.size() == 0) {
+        if (enemy.size() == 0) {
             isFinal = true;
-            new Sound("bomberman-starter-starter-2/res/sound/next_level.wav").play();
-            gameButton.setImage(new Image("D:/Workspace/Project/OP_Bomberman/bomberman-starter-starter-2/res/Menu/start_button.png"));
         }
     }
 

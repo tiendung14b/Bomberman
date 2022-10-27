@@ -71,7 +71,7 @@ public class Node {
     }
 
     public void calcH(Node destination) {
-        this.h = Math.abs(destination.getI() - this.getI()) + Math.abs(destination.getJ() - this.getJ());
+        this.h = (int)Math.abs(Math.pow(destination.getI() - this.getI(), 2) + Math.pow(destination.getJ() - this.getJ(), 2));
     }
 
     public void calcF() {

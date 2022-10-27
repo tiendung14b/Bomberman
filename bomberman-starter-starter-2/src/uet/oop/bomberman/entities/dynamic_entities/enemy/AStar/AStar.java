@@ -77,14 +77,14 @@ public class AStar {
 
     public void addNode(Node node, int i, int j) {
         if (!this.worldMap[i][j].isHasBlock() && !this.close.contains(worldMap[i][j])) {
-            if (!open.contains(this.worldMap[i][j])) {
-                worldMap[i][j].setNode(node);
-                open.add(worldMap[i][j]);
-            } else {
+            if (open.contains(this.worldMap[i][j])) {
                 if (worldMap[i][j].isGoodNode(node)) {
                     open.remove(worldMap[i][j]);
                     open.add(worldMap[i][j]);
                 }
+            } else {
+                worldMap[i][j].setNode(node);
+                open.add(worldMap[i][j]);
             }
         }
     }
@@ -123,8 +123,11 @@ public class AStar {
     }
 
     public void explore(Node node) {
+        // up node
         exploreUpNodes(node);
+        // node side
         exploreSideNodes(node);
+        // down side
         exploreDownNodes(node);
     }
 
@@ -143,7 +146,7 @@ public class AStar {
         while (!open.isEmpty()) {
             Node node = this.open.poll();
             this.close.add(node);
-            assert node != null;
+            // null
             if (node.equals(destination)) {
                 return explorePath(node);
             } else {
@@ -152,5 +155,4 @@ public class AStar {
         }
         return new ArrayList<Node>();
     }
-
 }

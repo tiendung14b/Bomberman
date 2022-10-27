@@ -41,31 +41,31 @@ public class Menu {
         level.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         level.setFill(Color.WHITE);
         level.setX(416);
-        level.setY(20);
+        level.setY(30);
 
         bomb = new Text("Bomb: " + 1);
         bomb.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         bomb.setFill(Color.WHITE);
         bomb.setX(512);
-        bomb.setY(20);
+        bomb.setY(30);
 
         maxBomb = new Text("Bomb: " + 1);
         maxBomb.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         maxBomb.setFill(Color.WHITE);
         maxBomb.setX(608);
-        maxBomb.setY(20);
+        maxBomb.setY(30);
 
         timeRemain = new Text("Time: " + Map.getMaxTime());
         timeRemain.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         timeRemain.setFill(Color.WHITE);
         timeRemain.setX(704);
-        timeRemain.setY(20);
+        timeRemain.setY(30);
 
 //        gameButton = new ImageView("D:/Workspace/Project/OP_Bomberman/bomberman-starter-starter-2/res/Menu/start_button.png");
 
         Pane pane = new Pane();
         pane.getChildren().addAll(level, bomb, maxBomb, timeRemain);
-        pane.setMinSize(992, 32);
+        pane.setMinSize(992, 54);
         pane.setMaxSize(800, 480);
         pane.setStyle("-fx-background-color: #132639");
 

@@ -41,7 +41,9 @@ public class Item extends Entity {
                 map.getPlayer().setSpeed(map.getPlayer().getSpeed() + 1);
                 break;
             case "portal":
-                //todo;
+                if(isFinal) {
+                    isNextLevel = true;
+                }
                 break;
             default:
                 //todo

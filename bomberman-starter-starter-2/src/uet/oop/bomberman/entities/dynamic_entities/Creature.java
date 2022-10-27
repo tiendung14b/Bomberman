@@ -6,13 +6,15 @@ import uet.oop.bomberman.entities.Entity;
 
 import static uet.oop.bomberman.BombermanGame.*;
 
-import uet.oop.bomberman.entities.dynamic_entities.enemy.Balloon;
-import uet.oop.bomberman.entities.dynamic_entities.enemy.Oneal;
+import uet.oop.bomberman.entities.dynamic_entities.Bomber.Player;
+import uet.oop.bomberman.entities.dynamic_entities.enemy.*;
 import uet.oop.bomberman.entities.static_entity.Item.Item;
 import uet.oop.bomberman.entities.static_entity.Object.Bomb;
 import uet.oop.bomberman.entities.static_entity.Object.Flame;
 import uet.oop.bomberman.entities.static_entity.Object.Grass;
 import uet.oop.bomberman.graphics.Sprite;
+
+import java.util.Objects;
 
 public class Creature extends Entity {
     //------------------------------
@@ -108,11 +110,11 @@ public class Creature extends Entity {
             if (this instanceof Player) {
                 if (this.getIdAnimation() == 1 || this.getIdAnimation() == 3) {
                     if (soundOn) {
-                        new Sound("bomberman-starter-starter-2/res/sound/walk_1.wav").play();
+                        new Sound("D:/Workspace/Demo3/BomberMan-tiendung2003/bomberman-starter-starter-2/res/sound/walk_1.wav").play();
                     }
                 } else if (this.getIdAnimation() == 2 || this.getIdAnimation() == 4) {
                     if (soundOn) {
-                        new Sound("bomberman-starter-starter-2/res/sound/walk_2.wav").play();
+                        new Sound("D:/Workspace/Demo3/BomberMan-tiendung2003/bomberman-starter-starter-2/res/sound/walk_2.wav").play();
                     }
                 }
             }
@@ -158,6 +160,18 @@ public class Creature extends Entity {
             idle = Sprite.oneal_left1.getFxImage();
             action1 = Sprite.oneal_left2.getFxImage();
             action2 = Sprite.oneal_left3.getFxImage();
+        } else if (this instanceof Kondoria) {
+            idle = Sprite.kondoria_left1.getFxImage();
+            action1 = Sprite.kondoria_left2.getFxImage();
+            action2 = Sprite.kondoria_left3.getFxImage();
+        } else if (this instanceof Doll){
+            idle = Sprite.doll_left1.getFxImage();
+            action1 = Sprite.doll_left2.getFxImage();
+            action2 = Sprite.doll_left3.getFxImage();
+        } else if (this instanceof Minvo){
+            idle = Sprite.minvo_left1.getFxImage();
+            action1 = Sprite.minvo_left2.getFxImage();
+            action2 = Sprite.minvo_left3.getFxImage();
         } else {
             return;
         }
@@ -189,6 +203,18 @@ public class Creature extends Entity {
             idle = Sprite.oneal_left1.getFxImage();
             action1 = Sprite.oneal_left2.getFxImage();
             action2 = Sprite.oneal_left3.getFxImage();
+        } else if (this instanceof Kondoria) {
+            idle = Sprite.kondoria_left1.getFxImage();
+            action1 = Sprite.kondoria_left2.getFxImage();
+            action2 = Sprite.kondoria_left3.getFxImage();
+        } else if (this instanceof Doll && !((Doll) this).isHide()) {
+            idle = Sprite.doll_left1.getFxImage();
+            action1 = Sprite.doll_left2.getFxImage();
+            action2 = Sprite.doll_left3.getFxImage();
+        } else if (this instanceof Minvo) {
+            idle = Sprite.minvo_left1.getFxImage();
+            action1 = Sprite.minvo_left2.getFxImage();
+            action2 = Sprite.minvo_left3.getFxImage();
         } else {
             return;
         }
@@ -220,6 +246,18 @@ public class Creature extends Entity {
             idle = Sprite.oneal_right1.getFxImage();
             action1 = Sprite.oneal_right2.getFxImage();
             action2 = Sprite.oneal_right3.getFxImage();
+        } else if (this instanceof Kondoria) {
+            idle = Sprite.kondoria_right1.getFxImage();
+            action1 = Sprite.kondoria_right2.getFxImage();
+            action2 = Sprite.kondoria_right3.getFxImage();
+        } else if (this instanceof Doll && !((Doll) this).isHide()) {
+            idle = Sprite.doll_right1.getFxImage();
+            action1 = Sprite.doll_right2.getFxImage();
+            action2 = Sprite.doll_right3.getFxImage();
+        } else if (this instanceof Minvo) {
+            idle = Sprite.minvo_right1.getFxImage();
+            action1 = Sprite.minvo_right2.getFxImage();
+            action2 = Sprite.minvo_right3.getFxImage();
         } else {
             return;
         }
@@ -251,6 +289,18 @@ public class Creature extends Entity {
             idle = Sprite.oneal_right1.getFxImage();
             action1 = Sprite.oneal_right2.getFxImage();
             action2 = Sprite.oneal_right3.getFxImage();
+        } else if (this instanceof Kondoria) {
+            idle = Sprite.kondoria_right1.getFxImage();
+            action1 = Sprite.kondoria_right2.getFxImage();
+            action2 = Sprite.kondoria_right3.getFxImage();
+        } else if (this instanceof Doll && !((Doll) this).isHide()) {
+            idle = Sprite.doll_right1.getFxImage();
+            action1 = Sprite.doll_right2.getFxImage();
+            action2 = Sprite.doll_right3.getFxImage();
+        } else if (this instanceof Minvo) {
+            idle = Sprite.minvo_right1.getFxImage();
+            action1 = Sprite.minvo_right2.getFxImage();
+            action2 = Sprite.minvo_right3.getFxImage();
         } else {
             return;
         }
@@ -284,8 +334,23 @@ public class Creature extends Entity {
             action2 = Sprite.mob_dead1.getFxImage();
             action3 = Sprite.mob_dead2.getFxImage();
             action4 = Sprite.mob_dead3.getFxImage();
-        } else if (this instanceof Oneal){
+        } else if (this instanceof Oneal) {
             action1 = Sprite.oneal_dead.getFxImage();
+            action2 = Sprite.mob_dead1.getFxImage();
+            action3 = Sprite.mob_dead2.getFxImage();
+            action4 = Sprite.mob_dead3.getFxImage();
+        } else if (this instanceof Kondoria) {
+            action1 = Sprite.kondoria_dead.getFxImage();
+            action2 = Sprite.mob_dead1.getFxImage();
+            action3 = Sprite.mob_dead2.getFxImage();
+            action4 = Sprite.mob_dead3.getFxImage();
+        } else if (this instanceof Doll && !((Doll) this).isHide()) {
+            action1 = Sprite.doll_dead.getFxImage();
+            action2 = Sprite.mob_dead1.getFxImage();
+            action3 = Sprite.mob_dead2.getFxImage();
+            action4 = Sprite.mob_dead3.getFxImage();
+        } else if (this instanceof Minvo) {
+            action1 = Sprite.minvo_dead.getFxImage();
             action2 = Sprite.mob_dead1.getFxImage();
             action3 = Sprite.mob_dead2.getFxImage();
             action4 = Sprite.mob_dead3.getFxImage();
@@ -366,6 +431,9 @@ public class Creature extends Entity {
         // kiểm tra xem có va chạm với flame không
         for (Flame flame : map.getFlames()) {
             if (this.checkCollision(flame)) {
+                if(this instanceof Oneal) {
+                    System.out.println("checked");
+                }
                 this.setAlive(false);
             }
         }
@@ -398,18 +466,27 @@ public class Creature extends Entity {
         }
         // kiểm tra xem có va chạm với tường không
         for (Entity entity1 : map.getLayout1()) {
-            if (!(entity1 instanceof Grass) && this.checkCollision(entity1)) {
+            if (!(entity1 instanceof Grass) && this.checkCollision(entity1) && !(this instanceof Doll)) {
                 is_col = true;
                 break;
+            }
+        }
+        // danh cho doll
+        if (this instanceof Doll) {
+            if(this.getX() / 32 < 1 || this.getX() / 32 > map.getWidthMap() - 2 || this.getY() / 32 < 1 || this.getY() / 32 > map.getHeightMap() - 2) {
+                is_col = true;
+                ((Doll) this).setTimeToChangeDir(0);
             }
         }
         // kiểm tra xem người chơi có ăn item không
         if (this instanceof Player) {
             for (Item item : map.getSubLayout()) {
                 if (this.checkCollision(item)) {
-                    new Sound("bomberman-starter-starter-2/res/sound/power_up.wav").play();
+                    if (!Objects.equals(item.getType(), "portal")) {
+                        new Sound("D:/Workspace/Demo3/BomberMan-tiendung2003/bomberman-starter-starter-2/res/sound/power_up.wav").play();
+                        item.setBreak(true);
+                    }
                     item.toPlayer();
-                    item.setBreak(true);
                     break;
                 }
             }
@@ -420,6 +497,10 @@ public class Creature extends Entity {
                 ((Balloon) this).setTimeToChangeDir(0);
             } else if (this instanceof Oneal) {
                 ((Oneal) this).setTimeToChangeDir(0);
+            } else if (this instanceof Kondoria) {
+                ((Kondoria) this).setTimeToChangeDir(0);
+            } else if (this instanceof Minvo) {
+                ((Minvo) this).setTimeToChangeDir(0);
             }
             this.setX(this.getX() - _x);
             this.setY(this.getY() - _y);

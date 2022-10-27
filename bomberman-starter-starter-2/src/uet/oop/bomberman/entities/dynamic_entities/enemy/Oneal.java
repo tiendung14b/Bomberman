@@ -40,17 +40,13 @@ public class Oneal extends Creature {
         map.setMapping();
         AStar aStar = new AStar(map.getMapping(), HEIGHT, WIDTH, start, player_point);
         List<Node> path = aStar.getPath();
-        path.forEach(g -> System.out.println(g.getI() + " " + g.getJ()));
-        System.out.println("--------");
-
+        isMove = true;
         if (path.isEmpty()) {
             this.isMove = false;
         } else {
-            if(path.size() <= 1) {
+            if(path.size() <= 2) {
                 return;
             }
-            this.isMove = true;
-            System.out.println(path.size());
             int id = path.size() - 2;
             if (this.getY() / 32 > path.get(id).getI()) {
                 this.setDirection("up");
